@@ -1,12 +1,5 @@
 import useTodos from "./hooks/useTodos";
 
-interface Todo {
-  id: number;
-  title: string;
-  userId: number;
-  completed: boolean;
-}
-
 const TodoList = () => {
   const { data: todos, error, isLoading } = useTodos();
 
