@@ -4,8 +4,9 @@ import useAddTodo from "./hooks/useAddTodo";
 const TodoForm = () => {
   const ref = useRef<HTMLInputElement>(null);
 
-  const { mutate, error, isLoading } = useAddTodo(() => {
+  const { mutate, error } = useAddTodo((test: string) => {
     if (ref.current) ref.current.value = "";
+    console.log(test);
   });
 
   return (
@@ -29,9 +30,7 @@ const TodoForm = () => {
           <input ref={ref} type="text" className="form-control" />
         </div>
         <div className="col">
-          <button disabled={isLoading} className="btn btn-primary">
-            {isLoading ? "Adding..." : "Add"}
-          </button>
+          <button className="btn btn-primary">Add</button>
         </div>
       </form>
     </>

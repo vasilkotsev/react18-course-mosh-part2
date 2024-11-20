@@ -1,20 +1,19 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Todo } from "./useTodos";
-import axios from "axios";
 import { CACHE_KEY_TODOS } from "../constants";
+import APIClient from "../services/apiClient";
+import { Todo } from "./useTodos";
+
+const apiClient = new APIClient<Todo>("/todos");
 
 interface AddTodoContext {
   previousTodos: Todo[];
 }
 
-const useAddTodo = (onAdd: () => void) => {
+const useAddTodo = (onAdd?: (test: string) => void) => {
   const queryClient = useQueryClient(); //хук, достъпващ нашия queryClient, дефиниран в main.tsx]
 
   return useMutation<Todo, Error, Todo, AddTodoContext>({
-    mutationFn: (todo: Todo) =>
-      axios
-        .post("https://jsonplaceholder.typicode.com/todos", todo)
-        .then((res) => res.data),
+    mutationFn: apiClient.post,
 
     // onMuтате se извиква преди изпълнението на mutationFn
     onMutate: (newTodo: Todo) => {
@@ -35,7 +34,7 @@ const useAddTodo = (onAdd: () => void) => {
         ...todos,
       ]);
 
-      onAdd();
+      if (onAdd) onAdd("test");
 
       // връщаме данните /взети преди ъпдейта на кеша/ като пропърти на обект /context object/, за да ги достъпим в onError()
       return { previousTodos };
