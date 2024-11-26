@@ -1,9 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CACHE_KEY_TODOS } from "../constants";
-import APIClient from "../services/apiClient";
-import { Todo } from "./useTodos";
-
-const apiClient = new APIClient<Todo>("/todos");
+import todoService, { Todo } from "../services/todoService";
 
 interface AddTodoContext {
   previousTodos: Todo[];
@@ -13,9 +10,10 @@ const useAddTodo = (onAdd?: (test: string) => void) => {
   const queryClient = useQueryClient(); //хук, достъпващ нашия queryClient, дефиниран в main.tsx]
 
   return useMutation<Todo, Error, Todo, AddTodoContext>({
-    mutationFn: apiClient.post,
+    //this hook call the server.
+    mutationFn: todoService.post,
 
-    // onMuтате se извиква преди изпълнението на mutationFn
+    // onMutate се извиква преди изпълнението на mutationFn
     onMutate: (newTodo: Todo) => {
       /* достъпваме данните, преди да ъпдейтнем кеша, и на края на функция го връщаме като пропърти на обект /context/
       Този context се използва, когато заявката ни с новите данни пропадне, за да възстановим и покажем старите данни */
